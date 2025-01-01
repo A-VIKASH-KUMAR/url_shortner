@@ -45,13 +45,76 @@
             <div id="error" class="mt-4 text-red-500 hidden"></div>
         </div>
     </div>
-
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4">Your Shortened URLs</h2>
+        <div id="urlList" class="space-y-4">
+            <!-- URLs will be populated here -->
+            <div class="text-center text-gray-500">Loading your URLs...</div>
+        </div>
+    </div>
+</div>
     <script>
+        if (window.location.search.includes('token=')) {
+    const token = new URLSearchParams(window.location.search).get('token');
+    localStorage.setItem('token', token);
+    window.history.replaceState({}, document.title, '/api/dashboard');
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+        function createUrlCard(url) {
+    const shortUrl = `${window.location.origin}/api/${url.alias}`;
+    
+    return `
+        <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div class="flex justify-between items-start">
+                <div class="space-y-2 flex-grow">
+                    <div class="flex items-center space-x-2">
+                        <a href="${shortUrl}" target="_blank" 
+                           class="text-blue-500 hover:underline font-medium break-all">
+                            ${shortUrl}
+                        </a>
+                        <button onclick="copyToClipboard('${shortUrl}')"
+                                class="text-gray-500 hover:text-blue-500 text-sm px-2 py-1 rounded border">
+                            Copy
+                        </button>
+                    </div>
+                    <div class="text-gray-500 text-sm break-all">
+                        Original: <a href="${url.longUrl}" target="_blank" 
+                                   class="hover:underline">${url.longUrl}</a>
+                    </div>
+                    <div class="text-gray-400 text-sm">
+                        Created: ${formatDate(url.createdAt)}
+                    </div>
+                    <div class="text-gray-500 text-sm">
+                        Alias: ${url.alias}
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2 flex justify-between text-sm">
+                <div class="text-gray-500">
+                    Topic: ${url.topic}
+                </div>
+                <button onclick="showAnalytics('${url.alias}')"
+                        class="text-blue-500 hover:underline">
+                    View Analytics
+                </button>
+            </div>
+        </div>
+    `;
+}
         // Store JWT token from URL
         if (window.location.search.includes('token=')) {
             const token = new URLSearchParams(window.location.search).get('token');
             localStorage.setItem('token', token);
-            window.history.replaceState({}, document.title, '/dashboard');
+            window.history.replaceState({}, document.title, '/api/dashboard');
         }
 
         // Handle form submission
@@ -92,11 +155,67 @@
                 resultDiv.classList.add('hidden');
             }
         });
+        async function fetchUserUrls() {
+    try {
+        const response = await fetch('/api/user-urls', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        const data = await response.json();
+        const urlList = document.getElementById('urlList');
+        
+        if (!data.urls || data.urls.length === 0) {
+            urlList.innerHTML = '<div class="text-center text-gray-500">You haven\'t shortened any URLs yet.</div>';
+            return;
+        }
 
-        // Check authentication
+        urlList.innerHTML = data.urls
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map(createUrlCard)
+            .join('');
+
+    } catch (err) {
+        console.error('Error fetching URLs:', err);
+        document.getElementById('urlList').innerHTML = 
+            '<div class="text-center text-red-500">Failed to load URLs</div>';
+    }
+}
+
+        // Show analytics modal
+        async function showAnalytics(alias) {
+            try {
+                const response = await fetch(`/api/analytics/${alias}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch analytics');
+
+                const data = await response.json();
+                alert(`
+                    Total Clicks: ${data.totalClicks}
+                    Unique Users: ${data.uniqueUsers}
+                    
+                    This is a basic alert - you might want to create a proper modal
+                    to display the full analytics data!
+                `);
+            } catch (err) {
+                alert('Failed to load analytics');
+            }
+        }
+
+        // Check authentication and load URLs
         if (!localStorage.getItem('token')) {
             window.location.href = '/auth/google';
+        } else {
+            fetchUserUrls();
         }
+
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path"
 import { validateToken } from "../middlewares/auth.validate";
-import { createShortUrl } from "../controllers/urlShorten.controller";
+import { createShortUrl, getUserUrls, getLongUrl } from "../controllers/urlShorten.controller";
 const router = express.Router()
 
 router.get('/dashboard', (req, res) => {
@@ -9,3 +9,7 @@ router.get('/dashboard', (req, res) => {
   });
 router.post("/shorten",validateToken ,createShortUrl)
 export default router
+
+router.get("/user-urls", validateToken, getUserUrls)
+
+router.get("/:alias", getLongUrl)

@@ -40,9 +40,32 @@ export const createShortUrl = async (req: any, res: any) => {
     // // Cache the URL mapping
     // await redis.set(`url:${alias}`, longUrl, 'EX', 86400); // 24 hours
 
-    return res.status(201).json({ shortUrl: `${process.env.BASE_URL}/${alias}`, createdAt: url.createdAt });
+    return res.status(201).json({ shortUrl: `${process.env.BASE_URL}/api/${alias}`, createdAt: url.createdAt });
   } catch (error) {
     console.error('Error creating short URL:', error);
     return res.status(500).json({ error: 'Error creating short URL' });
   }
 };
+
+export const getUserUrls = async (req:any, res:any) => {
+  try {
+    const userId = req.user._id
+    const userShortenUrlsData = await Url.find({userId:userId})
+    return res.status(200).json({"urls":userShortenUrlsData})
+  } catch (error) {
+    console.error("Error occoured to fetch user shorten urls", error);
+    return res.status(500).json({ error: 'Error fetching user shortened urls list' });
+  }
+}
+
+export const getLongUrl = async (req:any, res:any) => {
+  try {
+    const alias = req.params.alias
+    const aliasData = await Url.findOne({"alias":alias})
+    const longUrl = aliasData?.longUrl
+    return res.redirect(longUrl)
+  } catch (error) {
+    console.error("Error occoured to fetch long url from alias",error);
+    return error
+  }
+}
