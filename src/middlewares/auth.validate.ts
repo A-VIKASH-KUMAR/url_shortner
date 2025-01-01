@@ -15,22 +15,26 @@ export const validateRegister = (req:any, res:any, next:any) => {
 export const validateLogin = (req:any, res:any, next:any) => {
     return next()
 }
-function getAccessToken(userInfo: any) {
-    const token = jwt.sign(userInfo, process.env.JWT_SECRET_KEY!, {
-      expiresIn: "5m",
-    });
-  
-    return token;
-  }
-  
-  //Function to get the refresh token
-  function getRefreshToken(userInfo: any) {
-    const token = jwt.sign(userInfo, process.env.JWT_SECRET_KEY!, {
+export function getAccessToken(refreshToken:string) {
+  const { exp, iat, ...userDetail } = jwt.verify(
+    refreshToken,
+    process.env.JWT_SECRET_KEY!
+  ) as JwtPayload;
+    const token = jwt.sign(userDetail, process.env.JWT_SECRET_KEY!, {
       expiresIn: "24h",
     });
   
     return token;
-  }
+}
+  
+  //Function to get the refresh token
+function getRefreshToken(userInfo: any) {
+    const token = jwt.sign(userInfo, process.env.JWT_SECRET_KEY!, {
+      expiresIn: "30d",
+    });
+  
+    return token;
+}
 export const validateToken = (req:any, res:any, next:any) => {
     try {
         if (!req.headers.authorization) {
@@ -58,11 +62,11 @@ export const validateToken = (req:any, res:any, next:any) => {
             .json({ status: "error", message: "Invalid Token" });
         }
     
-        const accessToken = getAccessToken(userDetail); // Function to retrieve access token from request
+        // const accessToken = getAccessToken(userDetail); // Function to retrieve access token from request
         const refreshToken = getRefreshToken(userDetail); // Function to retrieve refresh token from request
     
         // Attach tokens to the response locals object for further use
-        res.locals.access = accessToken;
+        // res.locals.access = accessToken;
         res.locals.refresh = refreshToken;
     
         req.user = userDetail;

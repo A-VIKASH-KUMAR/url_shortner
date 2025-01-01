@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   pictureUrl: String,
-
   googleId: String,
   createdAt: Date,
   updatedAt: Date,

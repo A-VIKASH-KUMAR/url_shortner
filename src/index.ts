@@ -23,4 +23,4 @@ connectDb().then(() => {
 
 app.use(express.json());
 app.use("/api/auth", authRoute);
-app.use("/api/url-shortner", urlShortner)
+app.use("/api/", urlShortner)

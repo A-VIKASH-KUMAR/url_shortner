@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { Request } from "express";
 import { User } from "../models/auth.model";
 import createToken from "../utils/token"
+import { getAccessToken } from "../middlewares/auth.validate";
 dotenv.config();
 import axios from "axios";
 // type Request = {
@@ -80,26 +81,18 @@ export const googleUser = async (req: Request, res: any) => {
     );
     console.log("create user response", create_user_response);
     const jwtTokens = createToken(req,res, create_user_response)
-    return res.redirect(`/api/url-shortner/dashboard?token=${jwtTokens.accessToken}`);
+    return res.redirect(`/api/dashboard?token=${jwtTokens.refreshToken}`);
   } catch (error) {
     console.error("error occoured to login user", error);
     return res.status(500).json({ error: "error occoured to login user" });
   }
 };
 
-export const validateToken = async (req: Request, res: any) => {
+export const generateAccessToken = async (req: Request, res: any) => {
   try {
-    const authorizationCode = req.body.code;
-    const { tokens } = await oauth2Client.getToken(authorizationCode);
-    oauth2Client.setCredentials(tokens);
-
-    const payload = {
-      type: "authorized_user",
-      refresh_token: tokens.refresh_token,
-      access_token: tokens.access_token,
-      expiry_date: tokens.expiry_date,
-    };
-    return res.status(200).json({ data: googleUser });
+    const {refreshToken} = req.body;
+    const access_token = getAccessToken(refreshToken)
+    return res.status(200).json({ data: access_token });
   } catch (error) {
     console.error("error occoured to login user", error);
     return res.status(500).json({ error: "error occoured to login user" });

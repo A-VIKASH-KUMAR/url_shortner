@@ -18,6 +18,18 @@
                     placeholder="Enter URL to shorten" 
                     required
                     class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+                    <input 
+                    type="text" 
+                    id="customAlias" 
+                    placeholder="Enter a alias for the shorturl" 
+                    required
+                    class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+                    <input 
+                    type="text" 
+                    id="topic" 
+                    placeholder="Enter a topic for the short url describing the url type among 'acquisition', 'activation', 'retention', 'others'" 
+                    required
+                    class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
                 <button 
                     type="submit"
                     class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
@@ -46,6 +58,8 @@
         document.getElementById('urlForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const longUrl = document.getElementById('longUrl').value;
+            const customAlias = document.getElementById("customAlias").value;
+            const topic = document.getElementById("topic").value;
             const resultDiv = document.getElementById('result');
             const errorDiv = document.getElementById('error');
             const shortUrlLink = document.getElementById('shortUrl');
@@ -57,7 +71,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify({ longUrl })
+                    body: JSON.stringify({ longUrl, customAlias, topic })
                 });
 
                 const data = await response.json();

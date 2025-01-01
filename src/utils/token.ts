@@ -6,6 +6,7 @@ dotenv.config();
 export default function (req: any, res: any, updatedUser: any) {
     
     let jwtSignValue: any = {
+      _id:updatedUser._id,
       uid: updatedUser.googleId,
       email:updatedUser.email,
       firstName:updatedUser.firstName
