@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
+    <button 
+    onclick="logout()"
+    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+    Logout
+</button>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
@@ -54,6 +59,10 @@
     </div>
 </div>
     <script>
+         function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/api/auth/login';
+        }
         if (window.location.search.includes('token=')) {
     const token = new URLSearchParams(window.location.search).get('token');
     localStorage.setItem('token', token);

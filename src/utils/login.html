@@ -2,9 +2,20 @@
 <html>
 <head>
   <title>Login</title>
+  <script>
+    window.onload = async function() {
+      try {
+        const response = await fetch('/api/auth/google');
+        const data = await response.json();
+        document.getElementById('googleAuth').href = data.data;
+      } catch (error) {
+        console.error('Error fetching auth URL:', error);
+      }
+    }
+  </script>
 </head>
 <body>
   <h1>Login</h1>
-  <a href="/api/auth/google">Login with Google</a>
+  <a id="googleAuth" href="#">Login with Google</a>
 </body>
 </html>
