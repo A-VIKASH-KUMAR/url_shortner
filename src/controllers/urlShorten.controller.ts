@@ -1,5 +1,7 @@
 import { Url } from '../models/urlShortner.model';
 import { ObjectId } from 'mongoose';
+import {redis} from "../db"
+import { trackVisit } from '../controllers/analytics.controller';
 function isValidUrl(url: string) {
   try {
     new URL(url);
@@ -35,10 +37,8 @@ export const createShortUrl = async (req: any, res: any) => {
     // Create URL record
     const url = new Url({ userId, alias, longUrl, topic, customAlias: !!customAlias });
     await url.save();
-
-    // const redis = new Redis
-    // // Cache the URL mapping
-    // await redis.set(`url:${alias}`, longUrl, 'EX', 86400); // 24 hours
+    // Cache the URL mapping
+    await redis.set(`url:${alias}`, longUrl, 'EX', 86400); // 24 hours
 
     return res.status(201).json({ shortUrl: `${process.env.BASE_URL}/api/${alias}`, createdAt: url.createdAt });
   } catch (error) {
@@ -61,7 +61,13 @@ export const getUserUrls = async (req:any, res:any) => {
 export const getLongUrl = async (req:any, res:any) => {
   try {
     const alias = req.params.alias
-    const aliasData = await Url.findOne({"alias":alias})
+    await trackVisit(alias, req);
+    const redisUrl:any = await redis.get(`url:${alias}`, (err, res)=> console.log("res", res)
+    );
+    if (redisUrl){
+      return res.redirect(redisUrl)
+    }
+    const aliasData = await Url.findOne({"alias":alias})  
     const longUrl = aliasData?.longUrl
     return res.redirect(longUrl)
   } catch (error) {

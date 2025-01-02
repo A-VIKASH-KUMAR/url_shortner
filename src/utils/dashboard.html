@@ -195,14 +195,11 @@ function formatDate(dateString) {
                 });
 
                 if (!response.ok) throw new Error('Failed to fetch analytics');
-
+                console.log("count", response);
+                
                 const data = await response.json();
                 alert(`
-                    Total Clicks: ${data.totalClicks}
-                    Unique Users: ${data.uniqueUsers}
-                    
-                    This is a basic alert - you might want to create a proper modal
-                    to display the full analytics data!
+                    Total Clicks: ${data.length}
                 `);
             } catch (err) {
                 alert('Failed to load analytics');

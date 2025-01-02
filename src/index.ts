@@ -8,7 +8,7 @@ import urlShortner from "./routes/urlShortner.route"
 // import swaggerRoute from "./utils/swagger";
 dotenv.config();
 const app = express();
-const port = 3001;
+const port = process.env.PORT ?? 3001;
 app.use(bodyParser.json());
 
 app.get("/", function (req: any, res: any) {
@@ -17,7 +17,7 @@ app.get("/", function (req: any, res: any) {
 
 connectDb().then(() => {
   app.listen(port, () => {
-    console.log("server is running on port http://localhost:" + port);
+    console.log("server is running on port " + port);
   });
 });
 
