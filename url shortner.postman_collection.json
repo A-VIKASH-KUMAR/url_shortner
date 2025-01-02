@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "78e2fe81-dd6f-44d7-8b60-c873452e9074",
+		"name": "url shortner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31454101"
+	},
+	"item": [
+		{
+			"name": "google auth login url",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "get google auth login consent screen url",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/auth/google",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"auth",
+								"google"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "375"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"177-vu2EEWF6buvaaRmlIfuw3sgCRt4\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 01 Jan 2025 08:22:56 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": \"https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&response_type=code&client_id=252604062015-flo4idfrft9nngjp1vadabuu00rivm2i.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3001%2Fapi%2Fauth%2Fgoogle-redirect\"\n}"
+				}
+			]
+		},
+		{
+			"name": "shorten url",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzcyZGE1YzNiNGIyNWQ5M2Y1YmE4MGIiLCJ1aWQiOiIxMTIwMTYyNTYxMDQwNzkxMzk0MDIiLCJlbWFpbCI6ImFuZ2FqYWxhdmlrYXNoa3VtYXJAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiQU5HQUpBTEEgVklLQVNIIiwiaWF0IjoxNzM1NzMwNDEyLCJleHAiOjE3MzU4MTY4MTJ9.2e3HCqxpzXBPwD-MiV5iAMJZH-k5u7uQK4G6kOP_DYo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"longUrl\":\"https://www.google.co.in/\",\n    \"customAlias\":\"googshort\",\n    \"topic\":\"others\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/api/shorten",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"shorten"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "shorten url",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"longUrl\":\"https://www.google.co.in/\",\n    \"customAlias\":\"googshot2\",\n    \"topic\":\"others\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/shorten",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"shorten"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "85"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"55-uNuoTAO5pG6LxFXKYKe+aUxt+AI\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 01 Jan 2025 12:14:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"shortUrl\": \"http://localhost:3001/googshot2\",\n    \"createdAt\": \"2025-01-01T12:14:26.769Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "test redirect from short url to long url",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/api/googshot2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"googshot2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch all short urls created by the user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzcyZGE1YzNiNGIyNWQ5M2Y1YmE4MGIiLCJ1aWQiOiIxMTIwMTYyNTYxMDQwNzkxMzk0MDIiLCJlbWFpbCI6ImFuZ2FqYWxhdmlrYXNoa3VtYXJAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiQU5HQUpBTEEgVklLQVNIIiwiaWF0IjoxNzM1NzMwNDEyLCJleHAiOjE3MzU4MTY4MTJ9.2e3HCqxpzXBPwD-MiV5iAMJZH-k5u7uQK4G6kOP_DYo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/api/user-urls",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"user-urls"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "fetch all short urls created by the user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/user-urls",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"user-urls"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "470"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1d6-2FOg46mlmrmC00KN0x8i857dexc\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 01 Jan 2025 12:44:29 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"urls\": [\n        {\n            \"_id\": \"6775358ea394ea17c30145ac\",\n            \"userId\": \"6772da5c3b4b25d93f5ba80b\",\n            \"alias\": \"googshot2\",\n            \"longUrl\": \"https://www.google.co.in/\",\n            \"topic\": \"others\",\n            \"customAlias\": \"true\",\n            \"isActive\": true,\n            \"createdAt\": \"2025-01-01T12:31:10.915Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"677536e03c9d6d34233be4e3\",\n            \"userId\": \"6772da5c3b4b25d93f5ba80b\",\n            \"alias\": \"googshot3\",\n            \"longUrl\": \"https://www.google.co.in/\",\n            \"topic\": \"others\",\n            \"customAlias\": \"true\",\n            \"isActive\": true,\n            \"createdAt\": \"2025-01-01T12:36:48.564Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+				}
+			]
+		}
+	]
+}
