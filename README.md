@@ -9,3 +9,6 @@ once the google login is successfull u will enter the page containg the shorten 
 
 # to navigate using the deployed endpoint on gcp use the following endpoint
 https://url-shortner-252604062015.us-central1.run.app/api/auth/login
+
+## note: allowed values for the topic of shorten url are below
+'acquisition', 'activation', 'retention', 'others'
